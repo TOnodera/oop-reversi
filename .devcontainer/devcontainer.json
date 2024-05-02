@@ -18,13 +18,15 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"esbenp.prettier-vscode"
+				"esbenp.prettier-vscode",
+				"hediet.vscode-drawio"
 			],
 			"settings": {
 				"[typescript]": {
 					"editor.formatOnSave": true,
 					"editor.defaultFormatter": "esbenp.prettier-vscode"
-				}
+				},
+				"hediet.vscode-drawio.theme": "atlas"
 			}
 		}
 	}
