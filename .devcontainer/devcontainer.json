@@ -20,7 +20,8 @@
 			"extensions": [
 				"esbenp.prettier-vscode",
 				"hediet.vscode-drawio",
-				"shd101wyy.markdown-preview-enhanced"
+				"shd101wyy.markdown-preview-enhanced",
+				"arjun.swagger-viewer"
 			],
 			"settings": {
 				"[typescript]": {
