@@ -4,7 +4,9 @@ import "express-async-errors";
 
 const PORT = 3000;
 const app = express();
+
 app.use(morgan("dev"));
+app.use(express.static("static", { extensions: ["html"] }));
 
 app.get("/api/error", async (req, res) => {
   throw new Error("Error endpoint");
