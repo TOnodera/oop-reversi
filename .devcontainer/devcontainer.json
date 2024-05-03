@@ -19,7 +19,8 @@
 		"vscode": {
 			"extensions": [
 				"esbenp.prettier-vscode",
-				"hediet.vscode-drawio"
+				"hediet.vscode-drawio",
+				"shd101wyy.markdown-preview-enhanced"
 			],
 			"settings": {
 				"[typescript]": {
