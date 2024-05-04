@@ -12,6 +12,11 @@ app.get("/api/error", async (req, res) => {
   throw new Error("Error endpoint");
 });
 
+app.post("/api/games", async (req, res) => {
+  const startedAt = new Date();
+  res.status(200).end();
+});
+
 app.get("/api/hello", async (req, res) => {
   res.json({
     message: "Hello, world",
