@@ -29,12 +29,7 @@ app.get("/api/error", async (req, res) => {
 
 app.post("/api/games", async (req, res) => {
   const now = new Date();
-  const conn = await mysql.createConnection({
-    host: "mysql",
-    database: "reversi",
-    user: "reversi",
-    password: "password",
-  });
+  const conn = await connectMySql();
   try {
     await conn.beginTransaction();
     const gameInsertResult = await conn.execute<mysql.ResultSetHeader>(
@@ -80,6 +75,44 @@ app.post("/api/games", async (req, res) => {
   res.status(200).end();
 });
 
+app.get("/api/games/latest/turns/:turnCount", async (req, res) => {
+  const turnCount = parseInt(req.params.turnCount);
+  const conn = await connectMySql();
+  try {
+    const gameSelectResult = await conn.execute<mysql.RowDataPacket[]>(
+      "SELECT id, started_at FROM games ORDER BY id DESC limit 1"
+    );
+    const game = gameSelectResult[0][0];
+
+    const turnSelectResult = await conn.execute<mysql.RowDataPacket[]>(
+      "SELECT id, game_id, turn_count, next_disc, end_at FROM turns WHERE game_id = ? AND turn_count = ?",
+      [game["id"], turnCount]
+    );
+    const turn = turnSelectResult[0][0];
+
+    const squaresSelectResult = await conn.execute<mysql.RowDataPacket[]>(
+      "SELECT id, turn_id, x, y, disc FROM squares WHERE turn_id = ?",
+      [turn["id"]]
+    );
+
+    const squares = squaresSelectResult[0];
+    const board = Array.from(Array(8)).map(() => Array.from(Array(8)));
+    squares.forEach((s) => {
+      board[s.y][s.x] = s.disc;
+    });
+    const responceBody = {
+      turnCount,
+      board,
+      nextDisc: turn["next_disc"],
+      // TODO
+      winnerDisc: null,
+    };
+    res.json(responceBody);
+  } finally {
+    await conn.end();
+  }
+});
+
 app.get("/api/hello", async (req, res) => {
   res.json({
     message: "Hello, world",
@@ -102,3 +135,12 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Reversi application started: http://localhost:${PORT}`);
 });
+
+async function connectMySql() {
+  return await mysql.createConnection({
+    host: "mysql",
+    database: "reversi",
+    user: "reversi",
+    password: "password",
+  });
+}
