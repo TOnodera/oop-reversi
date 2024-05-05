@@ -1,10 +1,10 @@
 import express, { json } from "express";
 import morgan from "morgan";
 import "express-async-errors";
-import { PORT } from "./application/constants";
 import { gameRouter } from "./presentation/gameRouter";
 import { turnRouter } from "./presentation/turnRouter";
 
+const PORT = 3000;
 const app = express();
 
 app.use(morgan("dev"));
