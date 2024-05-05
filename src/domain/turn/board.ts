@@ -1,5 +1,5 @@
-import { Disc } from "./disc";
-import { Move } from "./move";
+import { Disc } from "../turn/disc";
+import { Move } from "../turn/move";
 
 export class Board {
   constructor(private _discs: Disc[][]) {}
