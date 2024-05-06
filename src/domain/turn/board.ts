@@ -26,7 +26,8 @@ export class Board {
     const newDiscs = this._discs.map((line) => line.map((disc) => disc));
     // 石を置く
     newDiscs[move.point.y][move.point.x] = move.disc;
-    // TODO ひっくり返す
+    // ひっくり返す
+    flipPoints.forEach(p=>newDiscs[p.y][p.x] = move.disc)
     return new Board(newDiscs);
   }
 
