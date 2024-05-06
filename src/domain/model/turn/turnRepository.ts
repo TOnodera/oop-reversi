@@ -1,12 +1,13 @@
 import mysql from "mysql2/promise";
 import { Turn } from "./turn";
-import { TurnGateway } from "../../dataaccess/turnGateway";
-import { SquareGateway } from "../../dataaccess/squareGateway";
-import { MoveGateway } from "../../dataaccess/moveGateway";
+import { TurnGateway } from "../../../infrastructure/turnGateway";
+import { SquareGateway } from "../../../infrastructure/squareGateway";
+import { MoveGateway } from "../../../infrastructure/moveGateway";
 import { Move } from "./move";
 import { toDisc } from "./disc";
 import { Point } from "./point";
 import { Board } from "./board";
+import { DomainError } from "../../error/domainError";
 
 const turnGateway = new TurnGateway();
 const squareGateway = new SquareGateway();
@@ -24,7 +25,10 @@ export class TurnRespoitory {
       turnCount
     );
     if (!turnRecord) {
-      throw new Error("specified turn not found");
+      throw new DomainError(
+        "SpecifiedTurnNotFound",
+        "specified turn not found"
+      );
     }
     const squareRecords = await squareGateway.findForTurnId(
       conn,
@@ -45,10 +49,13 @@ export class TurnRespoitory {
       );
     }
 
+    const nextDisc =
+      turnRecord.nextDisc === null ? undefined : toDisc(turnRecord.nextDisc);
+
     return new Turn(
       gameId,
       turnCount,
-      toDisc(turnRecord.nextDisc),
+      nextDisc,
       move,
       new Board(board),
       turnRecord.endAt

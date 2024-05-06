@@ -3,6 +3,8 @@ import morgan from "morgan";
 import "express-async-errors";
 import { gameRouter } from "./presentation/gameRouter";
 import { turnRouter } from "./presentation/turnRouter";
+import { DomainError } from "./domain/error/domainError";
+import { ApplicationError } from "./application/error/applicationError";
 
 const PORT = 3000;
 const app = express();
@@ -27,6 +29,23 @@ const errorHandler = (
   res: express.Response,
   _next: express.NextFunction
 ) => {
+  if (error instanceof DomainError) {
+    res.status(400).json({
+      type: error.type,
+      message: error.message,
+    });
+    return;
+  }
+
+  if (error instanceof ApplicationError) {
+    switch (error.type) {
+      case "LatestGameNotFound":
+        res.status(404).json({
+          type: error.type,
+          message: error.message,
+        });
+    }
+  }
   console.error("unexpected error occurred", error);
   res.status(500).json({
     message: "Unexpected error occurred",
