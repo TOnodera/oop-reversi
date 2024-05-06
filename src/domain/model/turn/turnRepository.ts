@@ -7,6 +7,7 @@ import { Move } from "./move";
 import { toDisc } from "./disc";
 import { Point } from "./point";
 import { Board } from "./board";
+import { DomainError } from "../../error/domainError";
 
 const turnGateway = new TurnGateway();
 const squareGateway = new SquareGateway();
@@ -24,7 +25,10 @@ export class TurnRespoitory {
       turnCount
     );
     if (!turnRecord) {
-      throw new Error("specified turn not found");
+      throw new DomainError(
+        "SpecifiedTurnNotFound",
+        "specified turn not found"
+      );
     }
     const squareRecords = await squareGateway.findForTurnId(
       conn,

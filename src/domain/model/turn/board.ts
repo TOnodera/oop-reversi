@@ -1,3 +1,4 @@
+import { DomainError } from "../../error/domainError";
 import { Disc, isOppositeDisc } from "../turn/disc";
 import { Move } from "../turn/move";
 import { Point } from "./point";
@@ -12,14 +13,17 @@ export class Board {
     // TODO 盤面におけるかチェック
     // 空出ない場合は石を置くことはできない
     if (this._discs[move.point.y][move.point.x] !== Disc.Empty) {
-      throw new Error("Selected point is not Empty");
+      throw new DomainError(
+        "SelectedPointIsNotEmpty",
+        "Selected point is not Empty"
+      );
     }
 
     // ひっくり返せる点がない場合は置くことはできない
     const flipPoints = this.listFlipPoints(move);
     console.log(flipPoints.length);
     if (flipPoints.length === 0) {
-      throw new Error("Flip point is emptys");
+      throw new DomainError("FlipPointsIsEmpty", "Flip point is emptys");
     }
 
     // 盤面をコピー
@@ -27,7 +31,7 @@ export class Board {
     // 石を置く
     newDiscs[move.point.y][move.point.x] = move.disc;
     // ひっくり返す
-    flipPoints.forEach(p=>newDiscs[p.y][p.x] = move.disc)
+    flipPoints.forEach((p) => (newDiscs[p.y][p.x] = move.disc));
     return new Board(newDiscs);
   }
 
