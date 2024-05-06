@@ -1,4 +1,5 @@
 import { DomainError } from "../../error/domainError";
+import { WinnterDisc } from "../gameResult/winnerDisc";
 import { Board, initialBoard } from "./board";
 import { Disc } from "./disc";
 import { Move } from "./move";
@@ -24,9 +25,6 @@ export class Turn {
     }
     const move = new Move(disc, point);
     const nextBoard = this._board.place(move);
-
-    // TODO スキップ処理も実装する
-    // const nextDisc = disc === Disc.Dark ? Disc.Light : Disc.Dark;
     const nextDisc = this.decideNextDisc(nextBoard, disc);
 
     return new Turn(
@@ -50,6 +48,23 @@ export class Turn {
       return Disc.Dark;
     } else {
       return Disc.Light;
+    }
+  }
+  gameEnded(): boolean {
+    // 次の手がない場合、すなわちnextDisc===undefinedの場合はゲーム終了
+    return this.nextDisc === undefined;
+  }
+
+  winnerDisc(): WinnterDisc {
+    const darkCount = this._board.count(Disc.Dark);
+    const lightCount = this._board.count(Disc.Light);
+
+    if (darkCount === lightCount) {
+      return WinnterDisc.Draw;
+    } else if (darkCount > lightCount) {
+      return WinnterDisc.Dark;
+    } else {
+      return WinnterDisc.LIGHT;
     }
   }
 

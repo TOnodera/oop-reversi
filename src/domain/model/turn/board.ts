@@ -99,6 +99,12 @@ export class Board {
     return false;
   }
 
+  count(disc: Disc): number {
+    return this._discs
+      .map((line) => line.filter((discOnBoard) => discOnBoard === disc).length)
+      .reduce((prev, curr) => prev + curr, 0);
+  }
+
   private wallDiscs(): Disc[][] {
     const walled: Disc[][] = [];
     const topAndBottomWall = Array(this._discs[0].length + 2).fill(Disc.Wall);
