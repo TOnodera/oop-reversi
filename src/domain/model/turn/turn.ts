@@ -8,7 +8,7 @@ export class Turn {
   constructor(
     private _gameId: number,
     private _turnCount: number,
-    private _nextDisc: Disc,
+    private _nextDisc: Disc | undefined,
     private _move: Move | undefined,
     private _board: Board,
     private _endAt: Date
@@ -26,7 +26,8 @@ export class Turn {
     const nextBoard = this._board.place(move);
 
     // TODO スキップ処理も実装する
-    const nextDisc = disc === Disc.Dark ? Disc.Light : Disc.Dark;
+    // const nextDisc = disc === Disc.Dark ? Disc.Light : Disc.Dark;
+    const nextDisc = this.decideNextDisc(nextBoard, disc);
 
     return new Turn(
       this._gameId,
@@ -36,6 +37,20 @@ export class Turn {
       nextBoard,
       new Date()
     );
+  }
+
+  private decideNextDisc(board: Board, previousDisc: Disc): Disc | undefined {
+    const existDarkValidMove = board.existValidMove(Disc.Dark);
+    const existLightValidMove = board.existValidMove(Disc.Light);
+    if (existDarkValidMove && existLightValidMove) {
+      return previousDisc === Disc.Dark ? Disc.Light : Disc.Dark;
+    } else if (!existDarkValidMove && !existLightValidMove) {
+      return undefined;
+    } else if (existDarkValidMove) {
+      return Disc.Dark;
+    } else {
+      return Disc.Light;
+    }
   }
 
   get gameId() {
